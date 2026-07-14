@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CitizenLex | AI-Powered Legal Assistance & Citizen Rights Platform</title>
+    <script>
+        // Catch and display browser errors directly on the screen for debugging
+        window.onerror = function(message, source, lineno, colno, error) {
+            const errorMsg = "Browser JS Error: " + message + " (Line " + lineno + ", Col " + colno + ") in " + source;
+            console.error(errorMsg);
+            
+            let errorDiv = document.getElementById("debug-error-banner");
+            if (!errorDiv) {
+                errorDiv = document.createElement("div");
+                errorDiv.id = "debug-error-banner";
+                errorDiv.style.cssText = "position: fixed; top: 0; left: 0; width: 100%; background: #ef4444; color: white; padding: 1.25rem; font-family: monospace; font-size: 0.9rem; z-index: 10000; border-bottom: 2px solid #b91c1c; box-shadow: 0 4px 12px rgba(0,0,0,0.3); word-break: break-all;";
+                document.body.insertBefore(errorDiv, document.body.firstChild);
+            }
+            errorDiv.innerHTML = `<strong>⚠️ Javascript Error Detected:</strong><br>${errorMsg}<br><br><small>Please report this text to the AI assistant to fix it.</small>`;
+            
+            // Log to server console via fetch
+            fetch("/log-client-error?msg=" + encodeURIComponent(errorMsg)).catch(()=>{});
+            return false;
+        };
+
+        window.addEventListener('unhandledrejection', function(event) {
+            const errorMsg = "Unhandled Rejection: " + event.reason;
+            console.error(errorMsg);
+            
+            let errorDiv = document.getElementById("debug-error-banner");
+            if (!errorDiv) {
+                errorDiv = document.createElement("div");
+                errorDiv.id = "debug-error-banner";
+                errorDiv.style.cssText = "position: fixed; top: 0; left: 0; width: 100%; background: #ef4444; color: white; padding: 1.25rem; font-family: monospace; font-size: 0.9rem; z-index: 10000; border-bottom: 2px solid #b91c1c; box-shadow: 0 4px 12px rgba(0,0,0,0.3); word-break: break-all;";
+                document.body.insertBefore(errorDiv, document.body.firstChild);
+            }
+            errorDiv.innerHTML = `<strong>⚠️ Unhandled Promise Rejection:</strong><br>${errorMsg}`;
+            
+            fetch("/log-client-error?msg=" + encodeURIComponent(errorMsg)).catch(()=>{});
+        });
+    </script>
+    <link rel="stylesheet" href="style.css?v=7">
+    <!-- FontAwesome Icons for modern aesthetic -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <div class="app-container">
+        
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="logo-container">
+                <i class="fas fa-balance-scale logo-icon"></i>
+                <span class="logo-text">CitizenLex</span>
+            </div>
+            
+            <nav class="nav-links">
+                <li class="nav-item active" data-view="dashboard">
+                    <button><i class="fas fa-th-large"></i> Dashboard</button>
+                </li>
+                <li class="nav-item" data-view="chat">
+                    <button><i class="fas fa-robot"></i> AI Legal Assistant</button>
+                </li>
+                <li class="nav-item" data-view="library">
+                    <button><i class="fas fa-book-open"></i> Rights Library</button>
+                </li>
+                <li class="nav-item" data-view="generator">
+                    <button><i class="fas fa-file-invoice"></i> Document Generator</button>
+                </li>
+                <li class="nav-item" data-view="glossary">
+                    <button><i class="fas fa-spell-check"></i> Legal Glossary</button>
+                </li>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <button class="theme-toggle-btn">
+                    <i class="fas fa-moon"></i> <span>Dark Mode</span>
+                </button>
+                
+                <div class="user-badge">
+                    <div class="user-avatar">CS</div>
+                    <div class="user-info">
+                        <div class="user-name">Citizen S.</div>
+                        <div class="user-status">Protected</div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+        
+        <!-- Main Content Area -->
+        <main class="main-content">
+            
+            <!-- Top Sticky Header -->
+            <header class="top-header">
+                <div class="header-title-container">
+                    <h1 id="top-header-title">Citizen Rights Hub</h1>
+                    <p id="top-header-subtitle">Welcome back, understand your legal shield today.</p>
+                </div>
+                
+                <div class="header-actions">
+                    <button class="emergency-btn">
+                        <i class="fas fa-shield-alt"></i> EMERGENCY GUIDE
+                    </button>
+                </div>
+            </header>
+            
+            <!-- ==================================================== -->
+            <!-- Dashboard View -->
+            <!-- ==================================================== -->
+            <section id="dashboard-view" class="view-section active">
+                <div class="welcome-banner">
+                    <h2>Demystifying Justice. <br>Empowering Every Citizen.</h2>
+                    <p>Access instant simulated AI legal advice, explore cataloged civil liberties, draft legal notices with live previews, and translate complex jargon into plain language.</p>
+                </div>
+                
+                <div class="quick-stats">
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="fas fa-shield-alt"></i></div>
+                        <div class="stat-info">
+                            <div class="stat-value" id="stat-total-rights">7</div>
+                            <div class="stat-label">Rights Cataloged</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="fas fa-file-alt"></i></div>
+                        <div class="stat-info">
+                            <div class="stat-value" id="stat-templates">3</div>
+                            <div class="stat-label">Notice Templates</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="fas fa-book"></i></div>
+                        <div class="stat-info">
+                            <div class="stat-value" id="stat-glossary-terms">18</div>
+                            <div class="stat-label">Glossary Entries</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="dashboard-grid">
+                    <!-- Left features flow -->
+                    <div class="dashboard-features-flow">
+                        <h3 class="features-section-title">Explore Your Legal Toolbox</h3>
+                        <div class="features-grid">
+                            <div class="feature-card" data-target="chat">
+                                <i class="fas fa-robot feature-card-icon"></i>
+                                <h3>AI Assistant Chat</h3>
+                                <p>Describe your issue in plain language and receive guided legal advice, citations, and steps.</p>
+                                <a href="#" class="feature-card-btn">Open Chat <i class="fas fa-arrow-right"></i></a>
+                            </div>
+                            
+                            <div class="feature-card" data-target="library">
+                                <i class="fas fa-book-open feature-card-icon"></i>
+                                <h3>Rights Library</h3>
+                                <p>Search and read your fundamental constitutional, tenant, consumer, and employee rights.</p>
+                                <a href="#" class="feature-card-btn">Search Library <i class="fas fa-arrow-right"></i></a>
+                            </div>
+                            
+                            <div class="feature-card" data-target="generator">
+                                <i class="fas fa-file-invoice feature-card-icon"></i>
+                                <h3>Document Generator</h3>
+                                <p>Generate landlord notices, consumer complaints, and official drafts instantly.</p>
+                                <a href="#" class="feature-card-btn">Draft Notices <i class="fas fa-arrow-right"></i></a>
+                            </div>
+                            
+                            <div class="feature-card" data-target="glossary">
+                                <i class="fas fa-spell-check feature-card-icon"></i>
+                                <h3>Plain-Text Glossary</h3>
+                                <p>Look up confusing legal words, Latin maxims, and definitions with real-world examples.</p>
+                                <a href="#" class="feature-card-btn">Browse Terms <i class="fas fa-arrow-right"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Right dashboard widgets -->
+                    <div class="dashboard-sidebar">
+                        <div class="widget-card">
+                            <h3><i class="fas fa-exclamation-triangle"></i> Quick Pocket Guides</h3>
+                            <div class="pocket-list">
+                                <!-- Dynamically loaded emergency rights list -->
+                            </div>
+                        </div>
+                        
+                        <div class="widget-card tip-widget">
+                            <h3><i class="fas fa-lightbulb"></i> Tip of the Day</h3>
+                            <p class="tip-content">"Ignorance of the law excuses no one (Ignorantia juris non excusat). Knowing your legal rights is the first and most critical shield you possess as a citizen."</p>
+                            <span class="tip-author">Legal Maxim</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- ==================================================== -->
+            <!-- AI Legal Assistant View -->
+            <!-- ==================================================== -->
+            <section id="chat-view" class="view-section">
+                <div class="chat-layout">
+                    <!-- Left Sidebar (Previous Chats/Prompts) -->
+                    <aside class="chat-sidebar">
+                        <h3>Conversations</h3>
+                        <ul class="recent-queries-list">
+                            <li class="recent-query-item active">
+                                <button><i class="fas fa-history"></i> Current Chat</button>
+                            </li>
+                        </ul>
+                        <button class="btn-secondary-action" id="clear-chat-btn" style="margin-top: auto; justify-content: center; width: 100%;">
+                            <i class="fas fa-trash-alt"></i> Clear Chat
+                        </button>
+                    </aside>
+                    
+                    <!-- Main Chat Panel -->
+                    <div class="chat-container">
+                        <div class="chat-header">
+                            <div class="chat-agent-info">
+                                <div class="chat-agent-avatar"><i class="fas fa-balance-scale"></i></div>
+                                <div class="chat-agent-meta">
+                                    <div class="agent-name">Lexis AI Assistant</div>
+                                    <div class="agent-status"><i class="fas fa-circle" style="font-size: 0.55rem; color: var(--accent);"></i> Legal Consultation Active</div>
+                                </div>
+                            </div>
+                            <div class="chat-actions-top" style="display: flex; gap: 0.75rem; align-items: center;">
+                                <button id="chat-clear-header-btn" title="Clear Chat history" style="display: flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: var(--border-radius-sm); background: rgba(255, 255, 255, 0.04); border: 1px solid var(--border-light); font-size: 0.85rem; color: var(--text-secondary); transition: all var(--transition-fast);"><i class="fas fa-trash-alt"></i></button>
+                                <button id="chat-info-btn" title="Legal Disclaimer (Information is educational, not binding)"><i class="fas fa-info-circle"></i> Info</button>
+                                <button id="chat-exit-btn" title="Exit Chat and return to Dashboard" style="display: flex; align-items: center; gap: 0.4rem; padding: 0.5rem 0.85rem; border-radius: var(--border-radius-sm); background: rgba(255, 255, 255, 0.04); border: 1px solid var(--border-light); font-size: 0.85rem; font-weight: 600; color: var(--text-secondary); transition: all var(--transition-fast);"><i class="fas fa-arrow-left"></i> Exit</button>
+                            </div>
+                        </div>
+                        
+                        <!-- Messages Body -->
+                        <div class="chat-messages">
+                            <!-- Messages generated dynamically -->
+                        </div>
+                        
+                        <!-- Suggestion Prompts -->
+                        <div class="chat-suggestions">
+                            <!-- Chips loaded dynamically -->
+                        </div>
+                        
+                        <!-- Input Bar -->
+                        <div class="chat-input-area">
+                            <div class="chat-input-wrapper">
+                                <input type="text" id="chat-input-field" placeholder="Ask about landlord evictions, car search consents, consumer complaints...">
+                            </div>
+                            <button class="send-message-btn" id="chat-send-btn"><i class="fas fa-paper-plane"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- ==================================================== -->
+            <!-- Rights Library View -->
+            <!-- ==================================================== -->
+            <section id="library-view" class="view-section">
+                <!-- Search and Filters -->
+                <div class="search-filter-bar">
+                    <div class="search-box-wrapper">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="library-search" placeholder="Search rights by titles, articles, descriptions, keywords...">
+                    </div>
+                    <select id="library-category-select" class="category-dropdown">
+                        <option value="all">All Categories</option>
+                        <option value="Police Interactions">Police Interactions</option>
+                        <option value="Tenant Rights">Tenant Rights</option>
+                        <option value="Consumer Rights">Consumer Rights</option>
+                        <option value="Employee Rights">Employee Rights</option>
+                        <option value="Civil Rights">Civil Rights</option>
+                    </select>
+                </div>
+                
+                <!-- Category Tabs Navigation -->
+                <div class="category-tabs">
+                    <!-- Loaded dynamically -->
+                </div>
+                
+                <!-- Cards Grid -->
+                <div class="library-cards-grid">
+                    <!-- Cards loaded dynamically -->
+                </div>
+            </section>
+            
+            <!-- ==================================================== -->
+            <!-- Document Generator View -->
+            <!-- ==================================================== -->
+            <section id="generator-view" class="view-section">
+                <div class="generator-layout">
+                    <!-- Form Fields Panel -->
+                    <div class="form-panel">
+                        <div class="form-group">
+                            <label for="template-select">Select Notice Template</label>
+                            <select id="template-select" style="background: var(--bg-surface); padding: 0.85rem;">
+                                <!-- Options loaded dynamically -->
+                            </select>
+                        </div>
+                        
+                        <hr style="border: 0; border-top: 1px solid var(--border-light); margin: 0.5rem 0;">
+                        
+                        <div id="form-fields-container" style="display: flex; flex-direction: column; gap: 1rem;">
+                            <!-- Form inputs dynamically loaded based on selection -->
+                        </div>
+                        
+                        <div class="form-row" style="margin-top: auto; padding-top: 1rem;">
+                            <button class="btn-secondary-action" id="reset-doc-btn"><i class="fas fa-undo"></i> Reset Form</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Document Paper Preview Panel -->
+                    <div class="preview-panel-container">
+                        <div class="preview-actions">
+                            <button class="btn-primary-action" id="print-doc-btn"><i class="fas fa-print"></i> Export / Print Letter</button>
+                        </div>
+                        
+                        <div class="preview-paper">
+                            <!-- Text rendered dynamically -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- ==================================================== -->
+            <!-- Legal Glossary View -->
+            <!-- ==================================================== -->
+            <section id="glossary-view" class="view-section">
+                <div class="glossary-layout">
+                    <div class="search-box-wrapper">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="glossary-search" placeholder="Type a term to filter the legal dictionary...">
+                    </div>
+                    
+                    <!-- Alphabet filters bar -->
+                    <div class="alphabet-bar">
+                        <!-- A-Z letters loaded dynamically -->
+                    </div>
+                    
+                    <!-- Cards Grid -->
+                    <div class="glossary-grid">
+                        <!-- Cards loaded dynamically -->
+                    </div>
+                </div>
+            </section>
+            
+        </main>
+    </div>
+    
+    <!-- ==================================================== -->
+    <!-- Detailed Rights Modal Window -->
+    <!-- ==================================================== -->
+    <div class="rights-modal">
+        <div class="rights-modal-content">
+            <!-- Loaded dynamically when right card is clicked -->
+        </div>
+    </div>
+    
+    <!-- Load JS Data sets first, followed by feature engines, and main core app controller -->
+    <script src="js/library.js?v=12"></script>
+    <script src="js/glossary.js?v=12"></script>
+    <script src="js/chatbot.js?v=12"></script>
+    <script src="js/generator.js?v=12"></script>
+    <script src="js/app.js?v=12"></script>
+</body>
+</html>
